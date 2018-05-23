@@ -1,0 +1,20 @@
+%% Memristor FEM simulation - script only
+% Reizinger Patrik
+% W5PDBR
+
+%% Model creation
+model = createpde;
+
+%% Define geometry
+% Each geometric object is a column vector in the geometry definition
+% matrix, the following types are valid
+
+% Circle: [1, x0, y0, r]'
+% Polygon [2, #segments, x0,...,x(n-1), y0,...,y(n-1)]'
+% Rectangle: [3, 4, x0, x1, x2, x3, y0, y1, y2, y3]'
+% Ellipse: [4, x0, y0, semi_a, semi_b, angle_in_rad]
+
+% Bounding rectangle
+rect_x = 4e-08;
+rect_y = 2.5e-08;
+R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, 
