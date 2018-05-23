@@ -1,10 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Memristor FEM simulation - script only
 % Reizinger Patrik
-% W5PDBR
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Model creation
 model = createpde;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define geometry
 % Each geometric object is a column vector in the geometry definition
@@ -64,7 +65,7 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'u', 0);
 
 % apply the excitation on the other side - edge 2
 u_excitation = 0.3;
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitation);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'h', 1, 'r', u_excitation);
 
 %%%%%%%%%%%%%%%%%%%%
 % Neumann (homogeneous)
@@ -73,13 +74,19 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitatio
 applyBoundaryCondition(model, 'neumann', 'Edge', [1, 3], 'g', 0, 'q', 0);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Mesh generation
+
+generateMesh(model, 'Hmax', 3e-9); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
+pdeplot(model); 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PDE coefficient specification
 % the scheme is:
 % -div(c*grad(u)) + a*u = f
 
 eps0 = 8.85e-12;
 eps_r = 6;
-offset = 0;
+offset = 3.5e-8;
 omega_area = A*B - pi/2*semi_a*semi_b;
 n = 1.2e27; %[m^-3] average ionic concentration
 
@@ -92,10 +99,22 @@ specifyCoefficients(model, 'm', 0,...
                            'f', n*omega_area*1.6e-19);
                        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Mesh generation
+%% PDE solving
 
-generateMesh(model, 'Hmax', 3e-9); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
-pdeplot(model); 
+results = solvepde(model);
+
+% export the structure elements into variables with more specific names
+u = results.NodalSolution;
+ux = results.XGradients;
+uy = results.YGradients;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
+%% Visualization
+figure()
+pdeplot(model, 'XYData', u, ... specify what to plot on the XY-plane with colors
+               'ZData', u, ... specify value showed on the Z-axis
+               'FaceAlpha', 0.5, ... set the opacity of the face of the plot
+               'FlowData', [ux, uy], ... include a Quiver plot
+               'ColorMap', 'jet', ... colormap
+               'Contour', 'on' ... plot contours
+               );

@@ -64,7 +64,7 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'u', 0);
 
 % apply the excitation on the other side - edge 2
 u_excitation = 0.3;
-applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitation);
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 2, 'h', 1, 'r', u_excitation);
 
 %%%%%%%%%%%%%%%%%%%%
 % Neumann (homogeneous)
@@ -93,5 +93,19 @@ specifyCoefficients(model, 'm', 0,...
                        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Mesh generation
-generateMesh(model, 'Hmax', 5); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
+
+generateMesh(model, 'Hmax', 3e-9); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
 pdeplot(model); 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PDE solving
+
+results = solvepde(model);
+
+% export the structure elements into variables with more specific names
+u = results.NodalSolution;
+ux = results.XGradients;
+uy = results.YGradients;
+
+pdeplot(model, 'XYData', u, ... specify what to plot on the XY-plane with colors
+                'ZData');
