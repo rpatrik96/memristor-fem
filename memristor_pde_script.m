@@ -92,3 +92,10 @@ specifyCoefficients(model, 'm', 0,...
                            'f', n*omega_area*1.6e-19);
                        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Mesh generation
+
+generateMesh(model, 'Hmax', 3e-9); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
+pdeplot(model); 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
