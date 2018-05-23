@@ -56,7 +56,6 @@ geometryFromEdges(model, g);
 % plot the geometry
 % notice the G in the command name, it's pdeGplot
 if plot_flag
-    figure()
     pdegplot(model, 'EdgeLabels', 'on');
 end
 
@@ -88,7 +87,6 @@ applyBoundaryCondition(model, 'neumann', 'Edge', [1, 3], 'g', 0, 'q', 0);
 generateMesh(model, 'Hmax', 2e-9); % default: mean jiggle, 10 max jiggle iterations, preR2013a mehing algorithm
 
 if plot_flag
-    figure()
     pdeplot(model); 
 end
 
@@ -124,7 +122,6 @@ uy = results.YGradients;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Visualization
 if plot_flag
-    figure()
     pdeplot(model, 'XYData', u, ... specify what to plot on the XY-plane with colors
                    'ZData', u, ... specify value showed on the Z-axis
                    'FaceAlpha', 0.5, ... set the opacity of the face of the plot
