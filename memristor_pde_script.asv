@@ -17,4 +17,47 @@ model = createpde;
 % Bounding rectangle
 rect_x = 4e-08;
 rect_y = 2.5e-08;
-R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, 
+R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, -rect_y, rect_y, rect_y, -rect_y]';
+
+% Simulated dendrite-like part
+% A - along x axis
+% B - along y axis
+semi_a = 20e-9;
+semi_b = 10e-9;
+E1 = [4, -rect_x, 0, semi_a, semi_b, 0]';
+E1 = [E1; zeros(length(R1)-length(E1),1)];  % append zeros for dimension matching
+
+gm = [R1, E1];  % geometry description matrix
+sf = 'R1-E1';   % set formula
+ns = char('R1', 'E1');  %namespace matrix
+ns = ns';
+
+% Create the geometry
+g = decsg(gm, sf, ns);
+
+% Include the gemoetry in the model and plot it
+geometryFromEdges(model, g);
+
+% plot the geometry
+% notice the G in the command name, it's pdeGplot
+pdegplot(model, 'EdgeLabels', 'on');
+
+%% Boundary conditions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dirichlet
+% the scheme is h*u = r
+
+% homogeneous for edges 4-7
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'u', 0);
+
+% apply the excitation on the other side - edge 2
+u_excitation = 0.3;
+applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitation);
+
+
+
+
+
+
+
