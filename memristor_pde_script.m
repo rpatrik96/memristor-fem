@@ -17,8 +17,12 @@ model = createpde;
 
 %%%%%%%%%%%%%%%%%%%%
 % Bounding rectangle
+% A - along x axis
+% B - along y axis
 rect_x = 4e-08;
 rect_y = 2.5e-08;
+A = 2*rect_x;
+B = 2*rect_y;
 R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, -rect_y, rect_y, rect_y, -rect_y]';
 
 %%%%%%%%%%%%%%%%%%%%
@@ -69,4 +73,22 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitatio
 applyBoundaryCondition(model, 'neumann', 'Edge', [1, 3], 'g', 0, 'q', 0);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
+%% PDE coefficient specification
+% the scheme is:
+% -div(c*grad(u)) + a*u = f
+
+eps0 = 8.85e-12;
+eps_r = 6;
+offset = 0;
+omega_area = A*B - pi/2*semi_a*semi_b;
+n = 1.2e27; %[m^-3] average ionic concentration
+
+c = @(region, state) eps0*eps_r*(1-1./(1+exp(18e7*(region.x-offset))));
+
+specifyCoefficients(model, 'm', 0,...
+                           'd', 0,...
+                           'c', c,...
+                           'a', 0,...
+                           'f', n*omega_area*1.6e-19);
+                       
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

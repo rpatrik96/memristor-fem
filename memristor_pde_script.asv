@@ -1,10 +1,11 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Memristor FEM simulation - script only
 % Reizinger Patrik
 % W5PDBR
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Model creation
 model = createpde;
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define geometry
 % Each geometric object is a column vector in the geometry definition
 % matrix, the following types are valid
@@ -14,11 +15,13 @@ model = createpde;
 % Rectangle: [3, 4, x0, x1, x2, x3, y0, y1, y2, y3]'
 % Ellipse: [4, x0, y0, semi_a, semi_b, angle_in_rad]
 
+%%%%%%%%%%%%%%%%%%%%
 % Bounding rectangle
 rect_x = 4e-08;
 rect_y = 2.5e-08;
 R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, -rect_y, rect_y, rect_y, -rect_y]';
 
+%%%%%%%%%%%%%%%%%%%%
 % Simulated dendrite-like part
 % A - along x axis
 % B - along y axis
@@ -32,21 +35,25 @@ sf = 'R1-E1';   % set formula
 ns = char('R1', 'E1');  %namespace matrix
 ns = ns';
 
+%%%%%%%%%%%%%%%%%%%%
 % Create the geometry
 g = decsg(gm, sf, ns);
 
 % Include the gemoetry in the model and plot it
 geometryFromEdges(model, g);
 
+%%%%%%%%%%%%%%%%%%%%
 % plot the geometry
 % notice the G in the command name, it's pdeGplot
 pdegplot(model, 'EdgeLabels', 'on');
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boundary conditions
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%
 % Dirichlet
-% the scheme is h*u = r
+% the scheme is:
+% h*u = r
 
 % homogeneous for edges 4-7
 applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'u', 0);
@@ -55,9 +62,23 @@ applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'u', 0);
 u_excitation = 0.3;
 applyBoundaryCondition(model, 'dirichlet', 'Edge', 4:7, 'h', 1, 'r', u_excitation);
 
+%%%%%%%%%%%%%%%%%%%%
+% Neumann (homogeneous)
+% the scheme is:
+% n*c*grad(u) + q*u = g
+applyBoundaryCondition(model, 'neumann', 'Edge', [1, 3], 'g', 0, 'q', 0);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PDE coefficient specification
+% the scheme is:
+% -div(c*grad(u)) + a*u = f
 
+eps0 = 8.85e-12;
+eps_r = 6;
+offset = 0;
 
+c = @(region, state) eps0*eps_r*(1-1./(1+exp(18e7*(region.x-offset))));
 
-
-
+specifyCoefficients('c', c,...
+                    'a', 0,...
+                    'f',)
