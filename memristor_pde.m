@@ -1,8 +1,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Memristor FEM simulation - script only
-% Reizinger Patrik
-
+% Reizinger Patrik (2018)
+%
+% Functionality:
+% this function creates a simplified model for a memristor, specifies
+% and solves a PDE for it
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function results = memristor_pde(semi_a, semi_b, offset, plot_flag)
 %% Model creation
 model = createpde;
 
@@ -30,8 +35,8 @@ R1 = [3, 4, -rect_x, -rect_x, rect_x, rect_x, -rect_y, rect_y, rect_y, -rect_y]'
 % Simulated dendrite-like part
 % A - along x axis
 % B - along y axis
-semi_a = 20e-9;
-semi_b = 10e-9;
+% semi_a = 20e-9;
+% semi_b = 10e-9;
 E1 = [4, -rect_x, 0, semi_a, semi_b, 0]';
 E1 = [E1; zeros(length(R1)-length(E1),1)];  % append zeros for dimension matching
 
@@ -86,7 +91,7 @@ pdeplot(model);
 
 eps0 = 8.85e-12;
 eps_r = 6;
-offset = 3.5e-8;
+% offset = 3.5e-8;
 omega_area = A*B - pi/2*semi_a*semi_b;
 n = 1.2e27; %[m^-3] average ionic concentration
 
@@ -110,11 +115,14 @@ uy = results.YGradients;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Visualization
-figure()
-pdeplot(model, 'XYData', u, ... specify what to plot on the XY-plane with colors
-               'ZData', u, ... specify value showed on the Z-axis
-               'FaceAlpha', 0.5, ... set the opacity of the face of the plot
-               'FlowData', [ux, uy], ... include a Quiver plot
-               'ColorMap', 'jet', ... colormap
-               'Contour', 'on' ... plot contours
-               );
+if plot_flag
+    pdeplot(model, 'XYData', u, ... specify what to plot on the XY-plane with colors
+                   'ZData', u, ... specify value showed on the Z-axis
+                   'FaceAlpha', 0.5, ... set the opacity of the face of the plot
+                   'FlowData', [ux, uy], ... include a Quiver plot
+                   'ColorMap', 'jet', ... colormap
+                   'Contour', 'on' ... plot contours
+                   );
+end
+
+end
