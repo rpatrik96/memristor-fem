@@ -7,13 +7,17 @@
 % solved with memristor_pde.m, and also it creates animations.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters for the animation
-en_3D = 1; % create 3D plot if 1
+en_3D = 0; % create 3D plot if 1
 % plot_mode = 0; % u-plot
-% plot_mode = 1; % E + u-plot without c
-plot_mode = 2; % E + u-plot with c (D)
+plot_mode = 1; % E + u-plot without c
+% plot_mode = 2; % E + u-plot with c (D)
 change_mode = 0; % ellipse size will be changed
 % change_mode = 1; % state boundary will be changed
 % change_mode = 2; % ellipse and state boundary will be changed
+
+video_name = join(['./videos/MEM_', 'plot_', num2str(plot_mode), ...
+                   '_ch_', num2str(change_mode), ...
+                   '_3D_', num2str(en_3D), '.avi']);   
 
 %%
 % %% Epsilon charakteristics
@@ -25,7 +29,7 @@ change_mode = 0; % ellipse size will be changed
 % ylabel('Függvényérték');
 
 %% Animation init
-n = 40;                  % number of pictures
+n = 100;                  % number of pictures
 % Bounding rectangle
 % A - along x axis
 % B - along y axis
@@ -82,6 +86,11 @@ for i=1:n
 end
 
 %% Create animation
+
+% VideoWriter object creation
+video_writer = VideoWriter(video_name);
+video_writer.open
+
 newplot;
 title('Set size then press any key!')
 disp('Set size then press any key!');
@@ -156,8 +165,15 @@ for i=1:n
             caxis([0 maxD]);
             
     end
-   F(i) = getframe(gcf); 
+%    F(i) = getframe(gcf); 
+   writeVideo(video_writer, getframe(gcf));
+   
 end
 clf;
 axes('Position', [0 0 1 1]);
-movie(F, 10);
+
+video_writer.close;
+video_writer.delete;
+
+close;
+
