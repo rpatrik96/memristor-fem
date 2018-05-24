@@ -20,10 +20,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters for the animation
 plot_mode = 0;
-change_mode = 0;
+change_mode = 2;
 en_3D = 0;
-write_video = 0;
-show_animation = 1;
+write_video = 1;
+show_animation = 0;
 
 video_name = join(['./videos/MEM_', 'plot_', num2str(plot_mode), ...
                    '_ch_', num2str(change_mode), ...
@@ -63,7 +63,11 @@ b_offset = linspace(0, 5e-9, n);
 %% Solve for all variants
 % and get maxima
 for i=1:n
-    
+   
+   % Print out progress
+   clc;
+   sprintf('Frame %d/%d is processed', i,n)
+   
    switch change_mode
        case 0
            [R(i), M(i)] = memristor_pde(20e-9+a_offset(i), 10e-9+b_offset(i), 0, 0);
@@ -199,8 +203,4 @@ if show_animation
     movie(F, 5);
 end
 
-pause;
 close;
-
-
-
