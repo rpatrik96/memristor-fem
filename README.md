@@ -31,6 +31,15 @@ help memristor_pde % if you need help, it prints out both the functionality and 
 [results, model] = memristor_pde(semi_a, semi_b, boundary_offset, plot_flag)
 ```
 
+## memristor_pde_gui.m
+This file is basically the same as __*memristor_pde.m*__, but it uses the *PDE Toolbox* GUI to solve the problem.
+Use it only for experimenting (because you get __visual feedback__ on the spot), but it makes solving even *slightly* different problems very slow, for it needs to build up the whole GUI-thing from scratch if a script is ran with modified parameters.
+
+### Example use:
+``` matlab
+memristor_pde_gui.m
+```
+
 ## process_results.m
 The __*process_results.m*__ script makes the postporcessing and visualization on the solution(s) obtained with __*memristor_pde.m*__.
 
