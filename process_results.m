@@ -20,7 +20,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters for the animation
 plot_mode = 2;
-change_mode = 0;
+change_mode = 2;
 en_3D = 0;
 write_video = 0;
 show_animation = 1;
@@ -39,7 +39,7 @@ video_name = join(['./videos/MEM_', 'plot_', num2str(plot_mode), ...
 % ylabel('Függvényérték');
 
 %% Animation init
-n = 100;                  % number of pictures
+n = 40;                  % number of pictures
 % Bounding rectangle
 % A - along x axis
 % B - along y axis
@@ -69,7 +69,7 @@ for i=1:n
            [R(i), M(i)] = memristor_pde(20e-9+a_offset(i), 10e-9+b_offset(i), 0, 0);
            
        case 1
-           [R(i), M(i)] = memristor_pde(20e-8, 10e-9, material_boundary(i), 0);
+           [R(i), M(i)] = memristor_pde(20e-9, 10e-9, material_boundary(i), 0);
        
        case 2
            [R(i), M(i)] = memristor_pde(20e-9+a_offset(i), 10e-9+b_offset(i), material_boundary(i), 0);
@@ -121,7 +121,6 @@ for i=1:n
                                );
             else
                  pdeplot(M(i), 'XYData', R(i).NodalSolution, ... specify what to plot on the XY-plane with colors
-                               'FaceAlpha', 0.5, ... set the opacity of the face of the plot
                                'FlowData', [-R(i).XGradients, -R(i).YGradients], ... include a Quiver plot
                                'ColorMap', 'jet', ... colormap
                                'Contour', 'on' ... plot contours
@@ -142,7 +141,6 @@ for i=1:n
                                );
             else
                 pdeplot(M(i), 'XYData', sqrt(R(i).XGradients.^2 + R(i).YGradients.^2), ... specify what to plot on the XY-plane with colors
-                              'FaceAlpha', 0.5, ... set the opacity of the face of the plot
                               'FlowData', [-R(i).XGradients, -R(i).YGradients], ... include a Quiver plot
                               'ColorMap', 'jet', ... colormap
                               'Contour', 'on' ... plot contours
@@ -165,8 +163,7 @@ for i=1:n
                                );
             else
                  pdeplot(M(i), 'XYData', sqrt(cgradx.^2 + cgrady.^2), ... specify what to plot on the XY-plane with colors
-                               'FaceAlpha', 0.5, ... set the opacity of the face of the plot
-                               'FlowData', [-R(i).XGradients, -R(i).YGradients], ... include a Quiver plot
+                               'FlowData', [-cgradx, -cgrady], ... include a Quiver plot
                                'ColorMap', 'jet', ... colormap
                                'Contour', 'on' ... plot contours
                                );
@@ -186,15 +183,15 @@ end
 clf;
 axes('Position', [0 0 1 1]);
 
-if show_animation
-    movie(F, 10);
-end
-
 % Free up VideoWriter object
 if write_video
     video_writer.close;
     video_writer.delete;
-    
-    close; % close figure
 end
+
+if show_animation
+    movie(F, 5);
+end
+
+
 
