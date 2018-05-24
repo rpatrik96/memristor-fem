@@ -95,7 +95,6 @@ newplot;
 title('Set size then press any key!')
 disp('Set size then press any key!');
 pause;
-Jmap = load('Jmap.dat');
 
 for i=1:n
     switch plot_mode
@@ -105,14 +104,14 @@ for i=1:n
                               'ZData', R(i).NodalSolution, ... specify value showed on the Z-axis
                               'FaceAlpha', 0.5, ... set the opacity of the face of the plot
                               'FlowData', [-R(i).XGradients, -R(i).YGradients], ... include a Quiver plot
-                              'ColorMap', Jmap, ... colormap
+                              'ColorMap', 'jet', ... colormap
                               'Contour', 'on' ... plot contours
                                );
             else
                  pdeplot(M(i), 'XYData', R(i).NodalSolution, ... specify what to plot on the XY-plane with colors
                                'FaceAlpha', 0.5, ... set the opacity of the face of the plot
                                'FlowData', [-R(i).XGradients, -R(i).YGradients], ... include a Quiver plot
-                               'ColorMap', Jmap, ... colormap
+                               'ColorMap', 'jet', ... colormap
                                'Contour', 'on' ... plot contours
                                );
             end
