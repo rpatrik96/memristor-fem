@@ -26,7 +26,8 @@ The __*memristor_pde.m*__ function creates a PDE model then prcesses it includin
 - **model**: PDE model
 
 ### Example use:
-```matlab
+``` matlab
+help memristor_pde % if you need help, it prints out both the functionality and the description of the parameters
 [results, model] = memristor_pde(semi_a, semi_b, boundary_offset, plot_flag)
 ```
 
@@ -48,7 +49,8 @@ The following parameters can be specified to customize the created plots/animati
 - **show_animation**: flag to specify whether to show the animations
 
 ### Example use:
-```matlab
+``` matlab
+help process_results % if you need help, it prints out both the functionality and the description of the parameters
 process_results
 ```
 
