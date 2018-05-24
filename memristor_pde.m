@@ -5,9 +5,20 @@
 % Functionality:
 % this function creates a simplified model for a memristor, specifies
 % and solves a PDE for it
+%
+% Input arguments:
+% - semi_a: semiaxis of the ellipse (along the X-axis)
+% - semi_b: semiaxis of the ellipse (along the Y-axis)
+% - boundary_offset: offset of the material boundary (0 means the sigmoid
+% is "centered" at 0)
+% - plot_flag: binary variable to switch the plot function on/off
+%
+% Output arguments:
+% - results: solution of the PDE
+% - model: PDE model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [results, model] = memristor_pde(semi_a, semi_b, offset, plot_flag)
+function [results, model] = memristor_pde(semi_a, semi_b, boundary_offset, plot_flag)
 %% Model creation
 model = createpde;
 
@@ -99,11 +110,11 @@ end
 
 eps0 = 8.85e-12;
 eps_r = 6;
-% offset = 3.5e-8;
+% boundary_offset = 3.5e-8;
 omega_area = A*B - pi/2*semi_a*semi_b;
 n = 1.2e27; %[m^-3] average ionic concentration
 
-c = @(region, state) eps0*eps_r*(1-1./(1+exp(18e7*(region.x-offset))));
+c = @(region, state) eps0*eps_r*(1-1./(1+exp(18e7*(region.x-boundary_offset))));
 
 specifyCoefficients(model, 'm', 0,...
                            'd', 0,...
