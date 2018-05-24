@@ -19,8 +19,8 @@
 % - show_animation: flag to specify whether to show the animations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters for the animation
-plot_mode = 2;
-change_mode = 2;
+plot_mode = 0;
+change_mode = 0;
 en_3D = 0;
 write_video = 0;
 show_animation = 1;
@@ -39,7 +39,7 @@ video_name = join(['./videos/MEM_', 'plot_', num2str(plot_mode), ...
 % ylabel('Függvényérték');
 
 %% Animation init
-n = 40;                  % number of pictures
+n = 100;                  % number of frames
 % Bounding rectangle
 % A - along x axis
 % B - along y axis
@@ -129,6 +129,8 @@ for i=1:n
             
             title('Electric potential');
             caxis([-maxu maxu]);
+            c=colorbar;
+            c.Label.String = 'U [V]';
             
         case 1
             if en_3D
@@ -149,6 +151,8 @@ for i=1:n
             
             title('Electric field');
             caxis([0 maxE]);
+            c=colorbar;
+            c.Label.String = '|E| [V/m]';
            
         case 2
             [cgradx,cgrady] = evaluateCGradient(R(i));
@@ -171,6 +175,8 @@ for i=1:n
             
             title('Electric displacement');
             caxis([0 maxD]);
+            c=colorbar;
+            c.Label.String = '|D| [As/m^2]';
             
     end
    F(i) = getframe(gcf); 
@@ -192,6 +198,9 @@ end
 if show_animation
     movie(F, 5);
 end
+
+pause;
+close;
 
 
 
